@@ -1,0 +1,108 @@
+<?= $this->extend('layouts/main') ?>
+
+<?= $this->section('pageTitle') ?>
+Data Buku
+<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
+<div class="container-fluid">
+    <?php if (session()->getFlashdata('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= session()->getFlashdata('success') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= session()->getFlashdata('error') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <form method="get" class="row g-3 flex-grow-1">
+                    <div class="col-md-6 col-12">
+                        <input type="text" name="keyword" class="form-control" placeholder="Cari judul buku..." value="<?= esc($keyword ?? '') ?>">
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <button type="submit" class="btn btn-secondary w-100">Filter</button>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <a href="<?= base_url('buku') ?>" class="btn btn-outline-secondary w-100">Reset</a>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <a href="<?= base_url('buku/print' . ($keyword ? '?keyword=' . urlencode($keyword) : '')) ?>" target="_blank" class="btn btn-outline-secondary w-100">Print</a>
+                    </div>
+                </form>
+                <div class="ms-auto">
+                    <?php if (session()->get('role') !== 'anggota'): ?>
+                        <a href="<?= base_url('buku/create') ?>" class="btn btn-primary">
+                            <i class="bi bi-plus-lg"></i> Tambah Buku
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                    <thead class="table-light">
+                        <tr class="text-center">
+                            <th width="5%">No</th>
+                            <th>Judul</th>
+                            <th>ISBN</th>
+                            <th>Tersedia</th>
+                            <th width="15%">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($buku)): ?>
+                            <?php $no = 1 + ($pager->getCurrentPage() - 1) * $pager->getPerPage(); ?>
+                            <?php foreach ($buku as $b): ?>
+                                <tr>
+                                    <td class="text-center"><?= $no++ ?></td>
+                                    <td><?= esc($b['judul']) ?></td>
+                                    <td><?= esc($b['isbn'] ?? '-') ?></td>
+                                    <td class="text-center">
+                                        <?php if (($b['tersedia'] ?? 0) > 0): ?>
+                                            <span class="badge bg-success"><?= $b['tersedia'] ?> Tersedia</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-danger">Habis</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="<?= base_url('buku/detail/' . $b['id_buku']) ?>" class="btn btn-sm btn-info" title="Detail">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <?php if (session()->get('role') !== 'anggota'): ?>
+                                            <a href="<?= base_url('buku/edit/' . $b['id_buku']) ?>" class="btn btn-sm btn-warning" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="<?= base_url('buku/delete/' . $b['id_buku']) ?>" class="btn btn-sm btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus data ini?')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" class="text-center py-4">Tidak ada data buku</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <?php if ($pager): ?>
+                <nav aria-label="Page navigation">
+                    <?= $pager->links('default', 'custom_buttons') ?>
+                </nav>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+<?= $this->endSection() ?>
