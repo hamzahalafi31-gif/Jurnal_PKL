@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= $title ?? 'PaqihPustaka' ?></title>
+    <title><?= $title ?? 'Jurnal PKL' ?></title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<?= base_url('assets/images/logo-app.ico') ?>">
@@ -446,8 +446,10 @@
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
         <div class="sidebar-brand">
-            <img src="<?= base_url('assets/images/logo-app.jpg') ?>" alt="PaqihPustaka" style="height: 32px; width: auto;" class="me-2">
-            <span class="brand-text">PP</span>
+            <div class="brand-text">
+    <i class="bi bi-journal-bookmark-fill me-2"></i>
+    Jurnal PKL
+    </div>
         </div>
 
         <div class="sidebar-menu">
@@ -466,13 +468,36 @@
 
             <h1 class="page-title ms-3 mb-0"><?= $this->renderSection('pageTitle') ?></h1>
 
-            <div class="user-menu ms-auto">
-                <span class="user-name d-none d-md-block"><strong><?= session('nama') ?></strong  > [<?= session('role') ?>]</span>
-                <img src="<?= base_url('uploads/users/' . session()->get('foto')) ?>" alt="User" class="user-avatar" onerror="this.src='<?= base_url('assets/img/default-avatar.png') ?>'">
-                <a href="<?= base_url('logout') ?>" class="btn btn-sm btn-outline-danger">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
+            <div class="user-menu ms-auto d-flex align-items-center gap-3">
+
+    <a href="<?= base_url('users/edit/' . session()->get('id')) ?>"
+       class="d-flex align-items-center gap-2 text-decoration-none text-dark">
+
+        <img
+            src="<?= base_url('uploads/users/' . session()->get('foto')) ?>"
+            alt="Foto Profil"
+            class="user-avatar"
+            onerror="this.src='<?= base_url('assets/img/default-avatar.png') ?>'"
+        >
+
+        <div class="d-none d-md-block">
+            <div class="fw-bold">
+                <?= esc(session('nama')) ?>
             </div>
+            <small class="text-muted">
+                <?= esc(session('role')) ?>
+            </small>
+        </div>
+
+    </a>
+
+    <a href="<?= base_url('logout') ?>"
+       class="btn btn-sm btn-outline-danger">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+    </a>
+
+</div>
         </nav>
 
         <!-- Content Area -->
