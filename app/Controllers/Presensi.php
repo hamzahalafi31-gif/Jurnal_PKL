@@ -163,6 +163,27 @@ class Presensi extends BaseController
             ->with('success', 'Presensi pulang berhasil disimpan.');
     }
 
+    
+    // Rekap presensi untuk admin dan petugas
+    public function rekap()
+    {
+        $tanggal = $this->request->getGet('tanggal');
+        $keyword = trim($this->request->getGet('keyword') ?? '');
+
+        $data = [
+            'title' => 'Rekap Presensi',
+            'tanggal' => $tanggal,
+            'keyword' => $keyword,
+            'rekap' => $this->presensi->getSemuaPresensi(
+                $tanggal,
+                $keyword
+            )
+        ];
+
+        return view('jurnalpkl/presensi/rekap', $data);
+    }
+
+
     // Halaman tambah presensi
     public function create()
     {

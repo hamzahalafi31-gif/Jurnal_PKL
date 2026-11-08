@@ -14,6 +14,7 @@ $admin     = ['filter' => 'role:admin'];
 $petugas   = ['filter' => 'role:petugas'];
 $anggota   = ['filter' => 'role:anggota'];
 $allRole   = ['filter' => 'role:admin, petugas, anggota'];
+$adminPetugas = ['filter' => 'role:admin,petugas'];
 
 // Login
 $routes->get('/login', 'Auth::login');
@@ -27,10 +28,8 @@ $routes->post('/register/store', 'Auth::store');
 // Landing Page
 $routes->get('/', 'Landing::index');
 
-// Dashboard Perpustakaan
-$routes->get('/dashboard', 'Home::index', $authFilter);
-
 // Dashboard Jurnal PKL
+$routes->get('/dashboard', 'DashboardPkl::index', $authFilter);
 $routes->get('/dashboard-pkl', 'DashboardPkl::index', $authFilter);
 
 // ========================================
@@ -44,6 +43,9 @@ $routes->group('presensi', ['filter' => 'auth'], function ($routes) {
     $routes->post('store', 'Presensi::store');
     $routes->post('pulang', 'Presensi::pulang');
 });
+
+// Rekap Presensi khusus Admin dan Petugas
+$routes->get('/presensi/rekap', 'Presensi::rekap', $adminPetugas);
 
 // Task
 $routes->group('task', ['filter' => 'auth'], function ($routes) {
@@ -83,16 +85,6 @@ $routes->get('users/detail/(:num)', 'Users::detail/$1', $allRole); // aksi detai
 $routes->get('users/print', 'Users::print', $allRole); // aksi print data user
 $routes->get('users/wa/(:num)', 'Users::wa/$1', $allRole); // aksi kirim ke whatsapp
 
-// Buku
-$routes->get('buku', 'Buku::index');
-$routes->get('buku/create', 'Buku::create');
-$routes->post('buku/store', 'Buku::store');
-$routes->get('buku/detail/(:num)', 'Buku::detail/$1');
-$routes->get('buku/edit/(:num)', 'Buku::edit/$1');
-$routes->post('buku/update/(:num)', 'Buku::update/$1');
-$routes->get('buku/delete/(:num)', 'Buku::delete/$1');
-$routes->get('buku/print', 'Buku::print');
-$routes->get('buku/wa/(:num)', 'Buku::wa/$1');
 
 // Kelola data Rak
 $routes->get('/rak', 'Rak::index');
@@ -146,3 +138,14 @@ $routes->get('/peminjaman/kembalikan/(:num)', 'Peminjaman::kembalikan/$1', $allR
 $routes->get('/peminjaman/konfirmasi/(:num)', 'Peminjaman::konfirmasi/$1', $allRole);
 $routes->get('/peminjaman/tolak/(:num)', 'Peminjaman::tolak/$1', $allRole);
 $routes->get('/peminjaman/print', 'Peminjaman::print', $allRole);
+
+/// Manajemen Pengguna (Khusus Admin)
+$routes->group('manajemen-pengguna', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'ManajemenPengguna::index', ['filter' => 'role:admin']);
+    $routes->get('tambah', 'ManajemenPengguna::tambah', ['filter' => 'role:admin']);
+    $routes->post('simpan', 'ManajemenPengguna::simpan', ['filter' => 'role:admin']);
+
+    // Edit dan Update Pengguna
+    $routes->get('edit/(:num)', 'ManajemenPengguna::edit/$1', ['filter' => 'role:admin']);
+    $routes->post('update/(:num)', 'ManajemenPengguna::update/$1', ['filter' => 'role:admin']);
+});

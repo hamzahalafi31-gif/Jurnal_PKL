@@ -9,6 +9,16 @@ Presensi PKL
 
 <div class="container-fluid">
 
+<?php if (in_array(session()->get('role'), ['admin', 'petugas'])): ?>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="<?= base_url('presensi/rekap') ?>"
+           class="btn btn-primary">
+            <i class="bi bi-clipboard-data me-2"></i>
+            Rekap Presensi
+        </a>
+    </div>
+<?php endif; ?>
+
     <!-- Notifikasi -->
     <?php if (session()->getFlashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show">

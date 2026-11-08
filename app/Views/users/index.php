@@ -1,11 +1,78 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('pageTitle') ?>
-Data Users
+
+<?php if (session()->get('role') === 'petugas'): ?>
+    Data Anggota PKL
+<?php else: ?>
+    Data Users
+<?php endif; ?>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="container-fluid">
+<style>
+    .users-page {
+        padding: 20px 0;
+    }
+
+    .users-card {
+        border: 1px solid #e5eaf2;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .users-card .card-header {
+        background: #ffffff;
+        padding: 20px;
+        border-bottom: 1px solid #e5eaf2;
+    }
+
+    .users-card .card-body {
+        padding: 20px;
+    }
+
+    .users-table {
+        min-width: 750px;
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+    .users-table thead th {
+        background: #eff6ff;
+        color: #1e40af;
+        font-weight: 700;
+        padding: 14px;
+        border-bottom: 2px solid #dbeafe;
+        white-space: nowrap;
+    }
+
+    .users-table tbody td {
+        padding: 13px;
+        color: #334155;
+    }
+
+    .users-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .users-table img {
+        object-fit: cover;
+        border: 2px solid #dbeafe;
+    }
+
+    .users-card .form-control,
+    .users-card .form-select {
+        min-height: 40px;
+        border-radius: 8px;
+    }
+
+    .users-card .btn {
+        border-radius: 8px;
+    }
+</style>
+<div class="container-fluid users-page">
     <?php if (session()->getFlashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <?= session()->getFlashdata('success') ?>
@@ -20,7 +87,7 @@ Data Users
         </div>
     <?php endif; ?>
 
-    <div class="card shadow mb-4">
+    <div class="card users-card mb-4">
         <div class="card-header py-3">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <form method="get" class="row g-3 flex-grow-1">
@@ -56,7 +123,7 @@ Data Users
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover users-table" width="100%" cellspacing="0">
                     <thead class="table-light">
                         <tr class="text-center">
                             <th width="5%">No</th>

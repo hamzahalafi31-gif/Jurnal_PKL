@@ -15,6 +15,34 @@
     <span class="nav-text">Profil</span>
 </a>
 
+<!-- Manajemen Pengguna (Khusus Admin) -->
+<?php if (session()->get('role') === 'admin'): ?>
+
+    <hr class="sidebar-divider">
+
+    <a href="<?= base_url('manajemen-pengguna') ?>"
+       class="nav-link <?= strpos(uri_string(), 'manajemen-pengguna') === 0 ? 'active' : '' ?>">
+
+        <i class="bi bi-people-fill"></i>
+        <span class="nav-text">Manajemen Pengguna</span>
+
+    </a>
+
+<?php endif; ?>
+
+<!-- Data Anggota PKL (Khusus Petugas) -->
+<?php if (session()->get('role') === 'petugas'): ?>
+
+    <a href="<?= base_url('users?role=anggota') ?>"
+       class="nav-link <?= uri_string() === 'users' ? 'active' : '' ?>">
+
+        <i class="bi bi-people-fill"></i>
+        <span class="nav-text">Data Anggota PKL</span>
+
+    </a>
+
+<?php endif; ?>
+
 <!-- Presensi -->
 <a href="<?= base_url('presensi') ?>"
    class="nav-link <?= strpos(uri_string(), 'presensi') === 0 ? 'active' : '' ?>">

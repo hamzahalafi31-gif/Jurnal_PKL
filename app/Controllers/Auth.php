@@ -42,12 +42,8 @@ class Auth extends Controller
                 'logged_in' => true
             ]);
 
-           // Mengarahkan pengguna sesuai role
-if ($users['role'] === 'anggota') {
-    return redirect()->to('/dashboard-pkl');
-}
-
-return redirect()->to('/dashboard');
+           // Mengarahkan semua pengguna ke Dashboard Jurnal PKL
+return redirect()->to('/dashboard-pkl');
         } else {
             $session->setFlashdata('salahpw', 'Password salah');
             return redirect()->to('/login');

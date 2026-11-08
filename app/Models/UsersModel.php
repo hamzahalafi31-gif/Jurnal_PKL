@@ -37,4 +37,15 @@ class UsersModel extends Model
                     ->orderBy('nama', 'ASC')
                     ->findAll();
     }
+    // Mengambil seluruh pengguna
+public function getSemuaPengguna()
+{
+    return $this->orderBy('nama', 'ASC')->findAll();
+}
+
+// Mengambil pengguna berdasarkan ID
+public function getPenggunaById($id)
+{
+    return $this->find($id);
+}
 }
