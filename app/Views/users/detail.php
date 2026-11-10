@@ -79,33 +79,42 @@ Detail User
         </div>
     </div>
 
-    <!-- Anggota/Petugas Detail -->
-    <?php if (isset($anggota)): ?>
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Data Anggota</h6>
-            </div>
-            <div class="card-body">
-                <table class="table table-borderless">
-                    <tr>
-                        <th width="30%">NIS</th>
-                        <td><?= esc($anggota['nis']) ?></td>
-                    </tr>
-                    <tr>
-                        <th>Alamat</th>
-                        <td><?= esc($anggota['alamat']) ?></td>
-                    </tr>
-                    <tr>
-                        <th>No. HP</th>
-                        <td><?= esc($anggota['no_hp']) ?></td>
-                    </tr>
-                    <tr>
-                        <th>Tanggal Daftar</th>
-                        <td><?= date('d/m/Y', strtotime($anggota['tanggal_daftar'])) ?></td>
-                    </tr>
-                </table>
-            </div>
+    <!-- Data Anggota PKL -->
+    <?php if (isset($anggota) && !empty($anggota)): ?>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Data Anggota PKL
+            </h6>
         </div>
+
+        <div class="card-body">
+            <table class="table table-borderless">
+                <tr>
+                    <th width="30%">ID Anggota</th>
+                    <td><?= esc($anggota['id_anggota_kelompok']) ?></td>
+                </tr>
+                <tr>
+                    <th>ID Kelompok</th>
+                    <td><?= esc($anggota['id_kelompok']) ?></td>
+                </tr>
+                <tr>
+                    <th>Tanggal Bergabung</th>
+                    <td>
+                        <?= !empty($anggota['tanggal_bergabung'])
+                            ? date('d/m/Y', strtotime($anggota['tanggal_bergabung']))
+                            : '-' ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <?php elseif (isset($anggota)): ?>
+    <div class="card shadow mb-4">
+        <div class="card-body text-center text-muted py-4">
+            Data anggota PKL belum tersedia.
+        </div>
+    </div>
     <?php endif; ?>
 
     <?php if (isset($petugas)): ?>
@@ -124,59 +133,7 @@ Detail User
         </div>
     <?php endif; ?>
 
-    <!-- Riwayat Peminjaman -->
-    <?php if (isset($riwayat_pinjam) && !empty($riwayat_pinjam)): ?>
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Riwayat Peminjaman</h6>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="table-light">
-                            <tr class="text-center">
-                                <th width="5%">No</th>
-                                <th>Judul Buku</th>
-                                <th>Tgl Pinjam</th>
-                                <th>Tgl Kembali</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $no = 1; foreach ($riwayat_pinjam as $pinjam): ?>
-                                <tr>
-                                    <td class="text-center"><?= $no++ ?></td>
-                                    <td><?= esc($pinjam['judul_buku']) ?></td>
-                                    <td><?= date('d/m/Y', strtotime($pinjam['tanggal_pinjam'])) ?></td>
-                                    <td><?= $pinjam['tanggal_kembali'] ? date('d/m/Y', strtotime($pinjam['tanggal_kembali'])) : '-' ?></td>
-                                    <td class="text-center">
-                                        <?php if ($pinjam['status'] === 'dimohon'): ?>
-                                            <span class="badge bg-info">Dimohon</span>
-                                        <?php elseif ($pinjam['status'] === 'dipinjam'): ?>
-                                            <span class="badge bg-warning text-dark">Dipinjam</span>
-                                        <?php elseif ($pinjam['status'] === 'kembali'): ?>
-                                            <span class="badge bg-success">Kembali</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-danger">Terlambat</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    <?php elseif (isset($anggota)): ?>
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Riwayat Peminjaman</h6>
-            </div>
-            <div class="card-body text-center text-muted py-4">
-                Belum ada riwayat peminjaman
-            </div>
-        </div>
-    <?php endif; ?>
+
 
     <!-- Aksi Cepat -->
     <div class="card shadow mb-4">

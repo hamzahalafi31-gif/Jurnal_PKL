@@ -83,16 +83,7 @@ Edit User
                     </div>
                 </div>
 
-                <!-- Data Petugas -->
-                <div id="petugasFields" style="<?= $user['role'] !== 'petugas' ? 'display:none;' : '' ?>">
-                    <hr>
-                    <h5 class="mb-3">Data Petugas</h5>
-
-                    <div class="mb-3">
-                        <label class="form-label">Jabatan</label>
-                        <input type="text" name="jabatan" class="form-control" value="<?= $petugas['jabatan'] ?? '' ?>">
-                    </div>
-                </div>
+                
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">

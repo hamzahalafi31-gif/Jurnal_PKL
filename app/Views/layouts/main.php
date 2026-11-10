@@ -436,10 +436,111 @@
         .hover-card:hover .card-footer small {
             color: #4e73df !important;
         }
+        
+/* =====================================
+   GLOBAL ANIMATION JURNAL PKL
+===================================== */
+
+/* Animasi ketika halaman dibuka */
+@keyframes pageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.content-area {
+    animation: pageFadeIn .45s ease-out;
+}
+
+/* Efek kartu */
+.card,
+.stat-card,
+.management-card,
+.hover-card {
+    transition: transform .25s ease,
+                box-shadow .25s ease;
+}
+
+.card:hover,
+.management-card:hover,
+.hover-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(37, 99, 235, .10);
+}
+
+/* Efek tombol */
+.btn {
+    transition: transform .2s ease,
+                box-shadow .2s ease,
+                background-color .2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, .15);
+}
+
+/* Efek menu sidebar */
+.sidebar .nav-link {
+    transition: background-color .2s ease,
+                color .2s ease,
+                padding-left .2s ease;
+}
+
+.sidebar:not(.collapsed) .nav-link:hover {
+    background-color: #eff6ff;
+    color: #2563eb;
+    padding-left: 1.2rem;
+}
+
+/* Efek tautan */
+a {
+    transition: color .2s ease;
+}
+
+/* Loading bar navigasi */
+#pageLoading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #2563eb, #38bdf8);
+    z-index: 9999;
+    opacity: 0;
+    transition: width .35s ease, opacity .2s ease;
+}
+
+#pageLoading.active {
+    width: 85%;
+    opacity: 1;
+}
+
+#pageLoading.complete {
+    width: 100%;
+    opacity: 1;
+}
+
+/* Mengurangi animasi jika diminta oleh pengaturan perangkat */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
+
     </style>
 </head>
 
 <body>
+    <div id="pageLoading"></div>
     <!-- Sidebar Overlay for Mobile -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -568,6 +669,42 @@
                     bsAlert.close();
                 }, 5000);
             });
+            // Loading indicator ketika berpindah halaman
+const pageLoading = document.getElementById('pageLoading');
+
+document.querySelectorAll('a[href]').forEach(link => {
+    link.addEventListener('click', function(event) {
+
+        const url = new URL(this.href, window.location.href);
+
+        // Abaikan link eksternal, tab baru, dan link khusus
+        if (
+            url.origin !== window.location.origin ||
+            this.target === '_blank' ||
+            this.hasAttribute('download') ||
+            this.getAttribute('href').startsWith('#') ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.metaKey ||
+            event.altKey
+        ) {
+            return;
+        }
+
+        pageLoading.classList.remove('complete');
+        pageLoading.classList.add('active');
+    });
+});
+
+// Loading ketika form dikirim
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function() {
+        if (form.checkValidity()) {
+            pageLoading.classList.remove('complete');
+            pageLoading.classList.add('active');
+        }
+    });
+});
         });
     </script>
 </body>

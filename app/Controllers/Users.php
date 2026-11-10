@@ -4,19 +4,19 @@ namespace App\Controllers;
 
 use App\Models\UsersModel;
 use App\Models\AnggotaModel;
-use App\Models\PetugasModel;
+
 
 class Users extends BaseController
 {
     protected $users;
     protected $anggota;
-    protected $petugas;
+    
 
     public function __construct()
     {
         $this->users  = new UsersModel();
         $this->anggota = new AnggotaModel();
-        $this->petugas = new PetugasModel();
+        
     }
 
     public function create()
@@ -97,23 +97,21 @@ class Users extends BaseController
     }
 
     public function edit($id)
-    {
-        $user = $this->users->find($id);
+{
+    $user = $this->users->find($id);
 
-        if (!$user) {
-            return redirect()->to('/users')->with('error', 'Data tidak ditemukan');
-        }
-
-        $data['user'] = $user;
-
-        if ($user['role'] === 'anggota') {
-            $data['anggota'] = $this->anggota->getByUserId($id);
-        } elseif ($user['role'] === 'petugas') {
-            $data['petugas'] = $this->petugas->getByUserId($id);
-        }
-
-        return view('users/edit', $data);
+    if (!$user) {
+        return redirect()->to('/users')->with('error', 'Data tidak ditemukan');
     }
+
+    $data['user'] = $user;
+
+    if ($user['role'] === 'anggota') {
+        $data['anggota'] = $this->anggota->getByUserId($id);
+    }
+
+    return view('users/edit', $data);
+}
 
     public function update($id)
     {
@@ -178,20 +176,8 @@ class Users extends BaseController
                     'tanggal_daftar' => date('Y-m-d'),
                 ]);
             }
-        } elseif ($newRole === 'petugas') {
-            $petugasData = $this->petugas->getByUserId($id);
-            if ($petugasData) {
-                $this->petugas->update($petugasData['id_petugas'], [
-                    'jabatan' => $this->request->getPost('jabatan'),
-                ]);
-            } else {
-                $this->petugas->save([
-                    'user_id' => $id,
-                    'jabatan' => $this->request->getPost('jabatan'),
-                ]);
-            }
+        
         }
-
         $session = session();
         $loggedInId = $session->get('id');
         $loggedInRole = $session->get('role');
@@ -221,28 +207,23 @@ class Users extends BaseController
     }
 
     public function detail($id)
-    {
-        $user = $this->users->find($id);
+{
+    $user = $this->users->find($id);
 
-        if (!$user) {
-            return redirect()->to('/users')->with('error', 'Data tidak ditemukan');
-        }
+    if (!$user) {
+        return redirect()->to('/users')->with('error', 'Data tidak ditemukan');
+    }
 
-        $data['user'] = $user;
+    $data['user'] = $user;
 
-        // Get related data based on role
-        if ($user['role'] === 'anggota') {
-            $data['anggota'] = $this->anggota->getByUserId($id);
-            // Get borrowed books
-            if ($data['anggota']) {
-                $peminjamanModel = new \App\Models\PeminjamanModel();
-                $data['riwayat_pinjam'] = $peminjamanModel->getPeminjamanByAnggotaWithRelations($data['anggota']['id_anggota']);
-            }
-        } elseif ($user['role'] === 'petugas') {
-            $data['petugas'] = $this->petugas->getByUserId($id);
-        }
+    // Ambil data anggota PKL
+    if ($user['role'] === 'anggota') {
+        $data['anggota'] = $this->anggota->getByUserId($id);
+    }
 
-        return view('users/detail', $data);
+    
+
+    return view('users/detail', $data);
     }
 
     public function print()

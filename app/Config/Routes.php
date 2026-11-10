@@ -47,33 +47,54 @@ $routes->group('presensi', ['filter' => 'auth'], function ($routes) {
 // Rekap Presensi khusus Admin dan Petugas
 $routes->get('/presensi/rekap', 'Presensi::rekap', $adminPetugas);
 
-// Task
+
+// Task Management
 $routes->group('task', ['filter' => 'auth'], function ($routes) {
+
+    // Daftar dan detail tugas
     $routes->get('/', 'Task::index');
+    $routes->get('detail/(:num)', 'Task::detail/$1');
+
+    // Membuat tugas
     $routes->get('create', 'Task::create');
     $routes->post('store', 'Task::store');
+
+    // Mengedit dan menghapus tugas
     $routes->get('edit/(:num)', 'Task::edit/$1');
     $routes->post('update/(:num)', 'Task::update/$1');
-    $routes->get('delete/(:num)', 'Task::delete/$1');
+    $routes->post('delete/(:num)', 'Task::delete/$1');
+
+    // Anggota mengirim hasil pengerjaan
+    $routes->post('kirim-hasil/(:num)', 'Task::kirimHasil/$1');
+
+    // Admin/Petugas memeriksa hasil pengerjaan
+    $routes->post('review/(:num)', 'Task::review/$1');
 });
+
 
 // Jurnal Aktivitas
 $routes->group('jurnal', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Jurnal::index');
+    $routes->get('rekap', 'Jurnal::rekap');
     $routes->get('create', 'Jurnal::create');
     $routes->post('store', 'Jurnal::store');
     $routes->get('detail/(:num)', 'Jurnal::detail/$1');
     $routes->get('edit/(:num)', 'Jurnal::edit/$1');
     $routes->post('update/(:num)', 'Jurnal::update/$1');
     $routes->get('delete/(:num)', 'Jurnal::delete/$1');
+    
+    // Persetujuan jurnal oleh admin/petugas
+    $routes->post('setujui/(:num)', 'Jurnal::setujui/$1');
+    $routes->post('tolak/(:num)', 'Jurnal::tolak/$1');
+
 });
 
 // Chatroom
 $routes->group('chat', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Chat::index');
     $routes->post('send', 'Chat::send');
+    $routes->get('messages', 'Chat::messages');
 });
-
 // Halaman User
 $routes->get('/users/create', 'Users::create'); // form tambah user
 $routes->post('/users/store', 'Users::store'); // aksi simpan user

@@ -45,4 +45,48 @@ class JurnalAktivitasModel extends Model
             ->orderBy('jurnal_aktivitas.tanggal', 'DESC')
             ->findAll();
     }
+    
+    // Mengambil data dan ringkasan rekap jurnal
+    public function getRekap($idUser = null, $tanggalMulai = null, $tanggalSelesai = null)
+    {
+        $builder = $this->db->table('jurnal_aktivitas');
+
+        $builder->select('
+            jurnal_aktivitas.*,
+            users.nama AS nama_user
+        ');
+
+        $builder->join(
+            'users',
+            'users.id = jurnal_aktivitas.id_user'
+        );
+
+        // Filter berdasarkan pengguna jika diperlukan
+        if ($idUser !== null) {
+            $builder->where('jurnal_aktivitas.id_user', $idUser);
+        }
+
+        // Filter tanggal mulai
+        if (!empty($tanggalMulai)) {
+            $builder->where('jurnal_aktivitas.tanggal >=', $tanggalMulai);
+        }
+
+        // Filter tanggal selesai
+        if (!empty($tanggalSelesai)) {
+            $builder->where('jurnal_aktivitas.tanggal <=', $tanggalSelesai);
+        }
+
+        $builder->orderBy('jurnal_aktivitas.tanggal', 'DESC');
+
+        $data = $builder->get()->getResultArray();
+
+        return [
+            'data'       => $data,
+            'total'      => count($data),
+            'menunggu'   => count(array_filter($data, fn($item) => $item['status'] === 'menunggu')),
+            'disetujui'  => count(array_filter($data, fn($item) => $item['status'] === 'disetujui')),
+            'ditolak'    => count(array_filter($data, fn($item) => $item['status'] === 'ditolak')),
+        ];
+    }
+
 }

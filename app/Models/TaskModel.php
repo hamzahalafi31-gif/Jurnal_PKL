@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Models;
@@ -11,15 +10,18 @@ class TaskModel extends Model
     protected $primaryKey = 'id_task';
 
     protected $allowedFields = [
-        'id_pembuat',
-        'id_penanggung_jawab',
-        'judul',
-        'deskripsi',
-        'prioritas',
-        'status',
-        'tanggal_mulai',
-        'deadline'
-    ];
+    'id_pembuat',
+    'id_penanggung_jawab',
+    'judul',
+    'deskripsi',
+    'prioritas',
+    'status',
+    'tanggal_mulai',
+    'deadline',
+    'hasil_pengerjaan',
+    'file_hasil',
+    'catatan_revisi'
+];
 
     protected $returnType = 'array';
     protected $useTimestamps = false;
@@ -55,4 +57,25 @@ class TaskModel extends Model
                     ->orderBy('deadline', 'ASC')
                     ->findAll();
     }
+    // Mengambil detail tugas berdasarkan ID
+public function getDetailTask($idTask)
+{
+    return $this->select('
+            tasks.*,
+            pembuat.nama AS nama_pembuat,
+            penanggung_jawab.nama AS nama_penanggung_jawab
+        ')
+        ->join(
+            'users AS pembuat',
+            'pembuat.id = tasks.id_pembuat',
+            'left'
+        )
+        ->join(
+            'users AS penanggung_jawab',
+            'penanggung_jawab.id = tasks.id_penanggung_jawab',
+            'left'
+        )
+        ->where('tasks.id_task', $idTask)
+        ->first();
+}
 }

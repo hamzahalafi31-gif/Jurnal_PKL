@@ -133,9 +133,7 @@
                             <th>Role</th>
                             <th>Status</th>
                             <th>Foto</th>
-                            <?php if (session()->get('role') == 'admin'): ?>
-                                <th width="15%">Aksi</th>
-                            <?php endif; ?>
+                            <th width="15%">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -170,22 +168,38 @@
                                             <span class="text-muted">-</span>
                                         <?php endif; ?>
                                     </td>
-                                    <?php if (session()->get('role') == 'admin'): ?>
-                                        <td class="text-center">
-                                            <a href="<?= base_url('users/detail/' . $u['id']) ?>" class="btn btn-sm btn-info" title="Detail">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="<?= base_url('users/edit/' . $u['id']) ?>" class="btn btn-sm btn-warning" title="Edit">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a href="<?= base_url('users/wa/' . $u['id']) ?>" target="_blank" class="btn btn-sm btn-success" title="Kirim WA">
-                                                <i class="bi bi-whatsapp"></i>
-                                            </a>
-                                            <a href="<?= base_url('users/delete/' . $u['id']) ?>" class="btn btn-sm btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus user ini?')">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </td>
-                                    <?php endif; ?>
+                                    <td class="text-center">
+
+    <!-- Detail bisa dibuka Admin dan Petugas -->
+    <a href="<?= base_url('users/detail/' . $u['id']) ?>"
+       class="btn btn-sm btn-info"
+       title="Detail">
+        <i class="bi bi-eye"></i>
+    </a>
+
+    <!-- Aksi khusus Admin -->
+    <?php if (session()->get('role') == 'admin'): ?>
+
+        <a href="<?= base_url('users/edit/' . $u['id']) ?>"
+           class="btn btn-sm btn-warning" title="Edit">
+            <i class="bi bi-pencil"></i>
+        </a>
+
+        <a href="<?= base_url('users/wa/' . $u['id']) ?>"
+           target="_blank" class="btn btn-sm btn-success" title="Kirim WA">
+            <i class="bi bi-whatsapp"></i>
+        </a>
+
+        <a href="<?= base_url('users/delete/' . $u['id']) ?>"
+           class="btn btn-sm btn-danger"
+           title="Hapus"
+           onclick="return confirm('Yakin ingin menghapus user ini?')">
+            <i class="bi bi-trash"></i>
+        </a>
+
+    <?php endif; ?>
+
+</td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>

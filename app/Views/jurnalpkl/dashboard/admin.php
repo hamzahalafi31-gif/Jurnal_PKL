@@ -150,6 +150,9 @@ Dashboard Admin
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
     }
+    .stat-card p {
+    min-height: 40px;
+}
 </style>
 
 <div class="container-fluid dashboard-wrapper">
@@ -170,14 +173,14 @@ Dashboard Admin
         </p>
     </div>
 
-    <!-- Statistik Pengguna -->
-    <h5 class="section-heading">Statistik Pengguna</h5>
+<!-- Statistik Pengguna -->
+<h5 class="section-heading">Statistik Pengguna</h5>
 
-    <div class="row g-3 mb-4">
+<div class="row g-3">
 
-    <div class="col-xl-4 col-md-6">
-        <a href="<?= base_url('manajemen-pengguna') ?>"
-           class="stat-link">
+    <!-- Total Pengguna -->
+    <div class="col-xl-2 col-md-4 col-6">
+        <a href="<?= base_url('manajemen-pengguna') ?>" class="stat-link">
             <div class="stat-card">
                 <div class="stat-icon icon-blue">
                     <i class="bi bi-people-fill"></i>
@@ -188,9 +191,22 @@ Dashboard Admin
         </a>
     </div>
 
-    <div class="col-xl-2 col-md-6">
-        <a href="<?= base_url('manajemen-pengguna?role=admin') ?>"
-           class="stat-link">
+    <!-- Data Anggota PKL -->
+    <div class="col-xl-2 col-md-4 col-6">
+        <a href="<?= base_url('users?role=anggota') ?>" class="stat-link">
+            <div class="stat-card">
+                <div class="stat-icon icon-cyan">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <h3><?= esc($totalDataAnggotaPkl) ?></h3>
+                <p>Data Anggota PKL</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- Administrator -->
+    <div class="col-xl-2 col-md-4 col-6">
+        <a href="<?= base_url('manajemen-pengguna?role=admin') ?>" class="stat-link">
             <div class="stat-card">
                 <div class="stat-icon icon-purple">
                     <i class="bi bi-shield-check"></i>
@@ -201,9 +217,9 @@ Dashboard Admin
         </a>
     </div>
 
-    <div class="col-xl-2 col-md-6">
-        <a href="<?= base_url('manajemen-pengguna?role=petugas') ?>"
-           class="stat-link">
+    <!-- Petugas -->
+    <div class="col-xl-2 col-md-4 col-6">
+        <a href="<?= base_url('manajemen-pengguna?role=petugas') ?>" class="stat-link">
             <div class="stat-card">
                 <div class="stat-icon icon-orange">
                     <i class="bi bi-person-gear"></i>
@@ -214,9 +230,9 @@ Dashboard Admin
         </a>
     </div>
 
-    <div class="col-xl-2 col-md-6">
-        <a href="<?= base_url('manajemen-pengguna?role=anggota') ?>"
-           class="stat-link">
+    <!-- Anggota -->
+    <div class="col-xl-2 col-md-4 col-6">
+        <a href="<?= base_url('manajemen-pengguna?role=anggota') ?>" class="stat-link">
             <div class="stat-card">
                 <div class="stat-icon icon-green">
                     <i class="bi bi-mortarboard"></i>
@@ -227,9 +243,9 @@ Dashboard Admin
         </a>
     </div>
 
-    <div class="col-xl-2 col-md-6">
-        <a href="<?= base_url('manajemen-pengguna?role=pembimbing') ?>"
-           class="stat-link">
+    <!-- Pembimbing -->
+    <div class="col-xl-2 col-md-4 col-6">
+        <a href="<?= base_url('manajemen-pengguna?role=pembimbing') ?>" class="stat-link">
             <div class="stat-card">
                 <div class="stat-icon icon-cyan">
                     <i class="bi bi-person-check"></i>
@@ -241,74 +257,107 @@ Dashboard Admin
     </div>
 
 </div>
+<h5 class="section-heading">Manajemen Data</h5>
 
-    <!-- Manajemen Data -->
-    <h5 class="section-heading">Manajemen Data</h5>
+<div class="row g-3">
 
-    <div class="row g-3">
-
-        <div class="col-xl-3 col-md-6">
-            <div class="management-card">
-                <div class="stat-icon icon-blue">
-                    <i class="bi bi-people"></i>
-                </div>
-                <h5>Data Pengguna</h5>
-                <p>Kelola akun dan hak akses seluruh pengguna.</p>
-                <a href="<?= base_url('manajemen-pengguna') ?>"
-                   class="management-button">
-                    Kelola Pengguna
-                    <i class="bi bi-arrow-right"></i>
-                </a>
+    <!-- Data Anggota PKL -->
+    <div class="col-xl-3 col-md-6">
+        <div class="management-card">
+            <div class="stat-icon icon-blue">
+                <i class="bi bi-people-fill"></i>
             </div>
+            <h5>Data Anggota PKL</h5>
+            <p>Lihat dan pantau seluruh peserta yang mengikuti kegiatan PKL.</p>
+            <a href="<?= base_url('users?role=anggota') ?>"
+               class="management-button">
+                Lihat Anggota
+                <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
+    </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="management-card">
-                <div class="stat-icon icon-green">
-                    <i class="bi bi-calendar-check"></i>
-                </div>
-                <h5>Presensi PKL</h5>
-                <p>Pantau rekap kehadiran peserta PKL.</p>
-                <a href="<?= base_url('presensi/rekap') ?>"
-                   class="management-button">
-                    Lihat Presensi
-                    <i class="bi bi-arrow-right"></i>
-                </a>
+    <!-- Data Pengguna -->
+    <div class="col-xl-3 col-md-6">
+        <div class="management-card">
+            <div class="stat-icon icon-blue">
+                <i class="bi bi-people"></i>
             </div>
+            <h5>Data Pengguna</h5>
+            <p>Kelola akun dan hak akses seluruh pengguna.</p>
+            <a href="<?= base_url('manajemen-pengguna') ?>"
+               class="management-button">
+                Kelola Pengguna
+                <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
+    </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="management-card">
-                <div class="stat-icon icon-orange">
-                    <i class="bi bi-journal-text"></i>
-                </div>
-                <h5>Jurnal Aktivitas</h5>
-                <p>Pantau dokumentasi aktivitas harian PKL.</p>
-                <a href="<?= base_url('jurnal') ?>"
-                   class="management-button">
-                    Lihat Jurnal
-                    <i class="bi bi-arrow-right"></i>
-                </a>
+    <!-- Presensi PKL -->
+    <div class="col-xl-3 col-md-6">
+        <div class="management-card">
+            <div class="stat-icon icon-green">
+                <i class="bi bi-calendar-check"></i>
             </div>
+            <h5>Presensi PKL</h5>
+            <p>Pantau rekap kehadiran peserta PKL.</p>
+            <a href="<?= base_url('presensi/rekap') ?>"
+               class="management-button">
+                Lihat Presensi
+                <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
+    </div>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="management-card">
-                <div class="stat-icon icon-purple">
-                    <i class="bi bi-list-task"></i>
-                </div>
-                <h5>Task Management</h5>
-                <p>Pantau tugas dan pekerjaan peserta PKL.</p>
-                <a href="<?= base_url('task') ?>"
-                   class="management-button">
-                    Lihat Tugas
-                    <i class="bi bi-arrow-right"></i>
-                </a>
+    <!-- Jurnal Aktivitas -->
+    <div class="col-xl-3 col-md-6">
+        <div class="management-card">
+            <div class="stat-icon icon-orange">
+                <i class="bi bi-journal-text"></i>
             </div>
+            <h5>Jurnal Aktivitas</h5>
+            <p>Pantau dokumentasi aktivitas harian PKL.</p>
+            <a href="<?= base_url('jurnal') ?>"
+               class="management-button">
+                Lihat Jurnal
+                <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
+    </div>
 
+    <!-- Task Management -->
+    <div class="col-xl-3 col-md-6">
+        <div class="management-card">
+            <div class="stat-icon icon-purple">
+                <i class="bi bi-list-task"></i>
+            </div>
+            <h5>Task Management</h5>
+            <p>Pantau tugas dan pekerjaan peserta PKL.</p>
+            <a href="<?= base_url('task') ?>"
+               class="management-button">
+                Lihat Tugas
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Chatroom -->
+    <div class="col-xl-3 col-md-6">
+        <div class="management-card">
+            <div class="stat-icon icon-purple">
+                <i class="bi bi-chat-dots"></i>
+            </div>
+            <h5>Chatroom</h5>
+            <p>Komunikasi dengan petugas dan peserta PKL.</p>
+            <a href="<?= base_url('chat') ?>"
+               class="management-button">
+                Buka Chatroom
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
     </div>
 
 </div>
+
 
 <?= $this->endSection() ?>

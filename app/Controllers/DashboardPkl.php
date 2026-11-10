@@ -18,24 +18,28 @@ class DashboardPkl extends BaseController
             case 'admin':
 
                 $data = [
-                    'totalPengguna' => $db->table('users')->countAll(),
+    'totalPengguna' => $db->table('users')->countAll(),
 
-                    'totalAdmin' => $db->table('users')
-                        ->where('role', 'admin')
-                        ->countAllResults(),
+    'totalAdmin' => $db->table('users')
+        ->where('role', 'admin')
+        ->countAllResults(),
 
-                    'totalPetugas' => $db->table('users')
-                        ->where('role', 'petugas')
-                        ->countAllResults(),
+    'totalPetugas' => $db->table('users')
+        ->where('role', 'petugas')
+        ->countAllResults(),
 
-                    'totalAnggota' => $db->table('users')
-                        ->where('role', 'anggota')
-                        ->countAllResults(),
+    'totalAnggota' => $db->table('users')
+        ->where('role', 'anggota')
+        ->countAllResults(),
 
-                    'totalPembimbing' => $db->table('users')
-                        ->where('role', 'pembimbing')
-                        ->countAllResults(),
-                ];
+    'totalPembimbing' => $db->table('users')
+        ->where('role', 'pembimbing')
+        ->countAllResults(),
+
+    'totalDataAnggotaPkl' => $db->table('users')
+    ->where('role', 'anggota')
+    ->countAllResults(),
+];
 
                 return view('jurnalpkl/dashboard/admin', $data);
 

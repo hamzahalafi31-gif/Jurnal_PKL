@@ -30,8 +30,8 @@
 
 <?php endif; ?>
 
-<!-- Data Anggota PKL (Khusus Petugas) -->
-<?php if (session()->get('role') === 'petugas'): ?>
+<!-- Data Anggota PKL (Admin dan Petugas) -->
+<?php if (in_array(session()->get('role'), ['admin', 'petugas'])): ?>
 
     <a href="<?= base_url('users?role=anggota') ?>"
        class="nav-link <?= uri_string() === 'users' ? 'active' : '' ?>">
@@ -57,12 +57,21 @@
     <span class="nav-text">Task Management</span>
 </a>
 
-<!-- Jurnal -->
+
+<!-- Jurnal Aktivitas -->
 <a href="<?= base_url('jurnal') ?>"
-   class="nav-link <?= strpos(uri_string(), 'jurnal') === 0 ? 'active' : '' ?>">
+   class="nav-link <?= strpos(uri_string(), 'jurnal') === 0 && strpos(uri_string(), 'jurnal/rekap') !== 0 ? 'active' : '' ?>">
     <i class="bi bi-journal-text"></i>
     <span class="nav-text">Jurnal Aktivitas</span>
 </a>
+
+<!-- Rekap Jurnal -->
+<a href="<?= base_url('jurnal/rekap') ?>"
+   class="nav-link <?= strpos(uri_string(), 'jurnal/rekap') === 0 ? 'active' : '' ?>">
+    <i class="bi bi-file-earmark-bar-graph"></i>
+    <span class="nav-text">Rekap Jurnal</span>
+</a>
+
 
 <!-- Chatroom -->
 <a href="<?= base_url('chat') ?>"
