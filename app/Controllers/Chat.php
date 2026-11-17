@@ -25,10 +25,35 @@ class Chat extends BaseController
 
     // Mengirim pesan
     
+
 public function send()
 {
+    $isAjax = $this->request->isAJAX();
+
+    // Fungsi untuk mengirim respons
+    $respond = function ($success, $message, $status = 422) use ($isAjax) {
+        if ($isAjax) {
+            return $this->response
+                ->setStatusCode($status)
+                ->setJSON([
+                    'success' => $success,
+                    'message' => $message,
+                    'csrfHash' => csrf_hash()
+                ]);
+        }
+
+        return redirect()->to('/chat')
+            ->with($success ? 'success' : 'error', $message);
+    };
+
     if (!$this->request->is('post')) {
-        return redirect()->to('/chat');
+        return $respond(false, 'Metode pengiriman tidak diizinkan.', 405);
+    }
+
+    $idUser = session()->get('id');
+
+    if (empty($idUser)) {
+        return $respond(false, 'Silakan login kembali.', 401);
     }
 
     $pesan = trim((string) $this->request->getPost('pesan'));
@@ -37,13 +62,11 @@ public function send()
     $adaFile = $file && $file->getError() !== UPLOAD_ERR_NO_FILE;
 
     if ($pesan === '' && !$adaFile) {
-        return redirect()->to('/chat')
-            ->with('error', 'Pesan atau lampiran harus diisi.');
+        return $respond(false, 'Pesan atau lampiran harus diisi.');
     }
 
     if (mb_strlen($pesan) > 2000) {
-        return redirect()->to('/chat')
-            ->with('error', 'Pesan maksimal 2.000 karakter.');
+        return $respond(false, 'Pesan maksimal 2.000 karakter.');
     }
 
     $namaFile = null;
@@ -55,20 +78,17 @@ public function send()
         ];
 
         if (!$file->isValid()) {
-            return redirect()->to('/chat')
-                ->with('error', 'File gagal diunggah.');
+            return $respond(false, 'File gagal diunggah.');
         }
 
         $ekstensi = strtolower($file->getClientExtension());
 
         if (!in_array($ekstensi, $ekstensiDiizinkan, true)) {
-            return redirect()->to('/chat')
-                ->with('error', 'Jenis file tidak diizinkan.');
+            return $respond(false, 'Jenis file tidak diizinkan.');
         }
 
         if ($file->getSize() > 5 * 1024 * 1024) {
-            return redirect()->to('/chat')
-                ->with('error', 'Ukuran file maksimal 5 MB.');
+            return $respond(false, 'Ukuran file maksimal 5 MB.');
         }
 
         $folder = FCPATH . 'uploads/chat';
@@ -80,26 +100,23 @@ public function send()
         $namaFile = $file->getRandomName();
 
         if (!$file->move($folder, $namaFile)) {
-            return redirect()->to('/chat')
-                ->with('error', 'Gagal menyimpan lampiran.');
+            return $respond(false, 'Gagal menyimpan lampiran.');
         }
     }
 
-    $idUser = session()->get('id');
-
-    if (empty($idUser)) {
-        return redirect()->to('/login');
-    }
-
-    $this->chat->insert([
+    $tersimpan = $this->chat->insert([
         'id_user' => $idUser,
         'pesan' => $pesan,
         'file_lampiran' => $namaFile
     ]);
 
-    return redirect()->to('/chat')
-        ->with('success', 'Pesan berhasil dikirim.');
+    if (!$tersimpan) {
+        return $respond(false, 'Pesan gagal disimpan.', 500);
+    }
+
+    return $respond(true, 'Pesan berhasil dikirim.', 200);
 }
+
 
     // Mengambil pesan terbaru untuk auto-refresh
 public function messages()

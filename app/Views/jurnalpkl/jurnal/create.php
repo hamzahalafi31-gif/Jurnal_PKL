@@ -29,8 +29,15 @@ Tambah Jurnal Aktivitas
                     </ul>
                 </div>
             <?php endif; ?>
+            <?php if (session()->getFlashdata('error')): ?>
+                <div class="alert alert-danger">
+                    <?= esc(session()->getFlashdata('error')) ?>
+                </div>
+            <?php endif; ?>
 
-            <form action="<?= base_url('jurnal/store') ?>" method="post">
+            <form action="<?= base_url('jurnal/store') ?>"
+                method="post"
+                enctype="multipart/form-data">
                 <?= csrf_field() ?>
 
                 <div class="form-group">
@@ -69,6 +76,26 @@ Tambah Jurnal Aktivitas
                         required
                     ><?= old('deskripsi_kegiatan') ?></textarea>
                 </div>
+
+               
+<div class="form-group">
+    <label for="foto_bukti">Foto Bukti Kegiatan</label>
+
+    <input
+        type="file"
+        name="foto_bukti[]"
+        id="foto_bukti"
+        class="form-control"
+        accept="image/jpeg,image/png,image/webp"
+        multiple
+    >
+
+    <small class="text-muted">
+        Kamu dapat memilih maksimal 5 foto.
+        Format JPG, PNG, atau WEBP. Maksimal 2 MB per foto.
+    </small>
+</div>
+
 
                 <div class="form-row">
                     <div class="form-group col-md-6">

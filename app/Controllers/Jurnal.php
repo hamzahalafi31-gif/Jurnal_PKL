@@ -3,14 +3,17 @@
 namespace App\Controllers;
 
 use App\Models\JurnalAktivitasModel;
+use App\Models\JurnalFotoModel;
 
 class Jurnal extends BaseController
 {
     protected $jurnal;
+    protected $jurnalFoto;
 
     public function __construct()
     {
         $this->jurnal = new JurnalAktivitasModel();
+        $this->jurnalFoto = new JurnalFotoModel();
     }
 
     // Memastikan hanya admin dan petugas yang dapat melakukan persetujuan
@@ -68,50 +71,182 @@ class Jurnal extends BaseController
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
         }
+        
 
-        $this->jurnal->insert([
-            'id_user' => session()->get('id'),
-            'tanggal' => $this->request->getPost('tanggal'),
-            'judul_kegiatan' => $this->request->getPost('judul_kegiatan'),
-            'deskripsi_kegiatan' => $this->request->getPost('deskripsi_kegiatan'),
-            'jam_mulai' => $this->request->getPost('jam_mulai') ?: null,
-            'jam_selesai' => $this->request->getPost('jam_selesai') ?: null,
-            'status' => 'menunggu'
-        ]);
+        // Mengambil beberapa foto yang diunggah
+        $files = $this->request->getFileMultiple('foto_bukti') ?? [];
+        $fotoValid = [];
+        $folderFoto = FCPATH . 'uploads/jurnal/';
 
-        return redirect()->to('/jurnal')
-            ->with('success', 'Jurnal aktivitas berhasil disimpan.');
+        // Maksimal 5 foto
+        if (count($files) > 5) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Maksimal 5 foto untuk satu jurnal.');
+        }
+
+        // Memeriksa setiap foto sebelum disimpan
+        foreach ($files as $foto) {
+            if ($foto->getError() === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+
+            
+
+            if (!$foto->isValid()) {
+    return redirect()->back()
+        ->withInput()
+        ->with('error', 'File foto gagal diunggah. Silakan coba lagi.');
+}
+
+$mime = $foto->getMimeType();
+
+if (
+    !in_array($mime, ['image/jpeg', 'image/png', 'image/webp']) ||
+    $foto->getSizeByUnit('kb') > 2048
+) {
+    return redirect()->back()
+        ->withInput()
+        ->with('error', 'Foto harus JPG, PNG, atau WEBP dan maksimal 2 MB per foto.');
+}
+
+            $fotoValid[] = $foto;
+        }
+
+        if (!is_dir($folderFoto)) {
+            mkdir($folderFoto, 0775, true);
+        }
+
+        
+// Menyiapkan database transaction
+$db = \Config\Database::connect();
+$db->transBegin();
+
+// Mencatat file yang berhasil dipindahkan
+$fileTersimpan = [];
+
+try {
+
+    // Simpan data jurnal terlebih dahulu
+    $hasilJurnal = $this->jurnal->insert([
+        'id_user' => session()->get('id'),
+        'tanggal' => $this->request->getPost('tanggal'),
+        'judul_kegiatan' => $this->request->getPost('judul_kegiatan'),
+        'deskripsi_kegiatan' => $this->request->getPost('deskripsi_kegiatan'),
+        'jam_mulai' => $this->request->getPost('jam_mulai') ?: null,
+        'jam_selesai' => $this->request->getPost('jam_selesai') ?: null,
+        'status' => 'menunggu'
+    ]);
+
+    if ($hasilJurnal === false) {
+        throw new \RuntimeException('Gagal menyimpan jurnal.');
     }
 
-    // Detail jurnal
-    public function detail($id)
-    {
-        $item = $this->jurnal->find($id);
+    $idJurnal = $this->jurnal->getInsertID();
 
-        if (!$item) {
-            return redirect()->to('/jurnal')
-                ->with('error', 'Jurnal tidak ditemukan.');
-        }
-
-        $role = session()->get('role');
-
-        if (!in_array($role, ['admin', 'petugas', 'anggota'])) {
-            return redirect()->to('/jurnal')
-                ->with('error', 'Akses ditolak.');
-        }
-
-        if (
-            $role === 'anggota' &&
-            $item['id_user'] != session()->get('id')
-        ) {
-            return redirect()->to('/jurnal')
-                ->with('error', 'Kamu tidak memiliki akses ke jurnal ini.');
-        }
-
-        return view('jurnalpkl/jurnal/detail', [
-            'jurnal' => $item
-        ]);
+    if (!$idJurnal) {
+        throw new \RuntimeException('ID jurnal tidak ditemukan.');
     }
+
+    // Simpan setiap foto dan hubungkan dengan jurnal
+    foreach ($fotoValid as $foto) {
+
+        $namaFoto = $foto->getRandomName();
+
+        $foto->move($folderFoto, $namaFoto);
+
+        $pathFoto = $folderFoto . $namaFoto;
+
+        if (!is_file($pathFoto)) {
+            throw new \RuntimeException('Gagal memindahkan foto.');
+        }
+
+        $fileTersimpan[] = $pathFoto;
+
+        $hasilFoto = $this->jurnalFoto->insert([
+            'id_jurnal' => $idJurnal,
+            'nama_foto' => $namaFoto
+        ]);
+
+        if ($hasilFoto === false) {
+            throw new \RuntimeException('Gagal menyimpan data foto.');
+        }
+    }
+
+    // Pastikan semua query database berhasil
+    if ($db->transStatus() === false) {
+        throw new \RuntimeException('Transaksi database gagal.');
+    }
+
+    // Simpan seluruh perubahan database
+    $db->transCommit();
+
+} catch (\Throwable $e) {
+
+    // Batalkan perubahan database
+    $db->transRollback();
+
+    // Hapus foto yang sudah terlanjur dipindahkan
+    foreach ($fileTersimpan as $path) {
+        if (is_file($path)) {
+            unlink($path);
+        }
+    }
+
+    log_message('error', 'Gagal menyimpan jurnal: ' . $e->getMessage());
+
+    
+return redirect()->back()
+    ->withInput()
+    ->with('error', 'Jurnal atau foto gagal disimpan. Silakan coba lagi.');
+}
+
+// Jika seluruh penyimpanan berhasil
+return redirect()->to('/jurnal')
+    ->with('success', 'Jurnal dan foto bukti berhasil disimpan.');
+}
+
+// Detail jurnal
+
+
+
+
+
+    
+        // Detail jurnal
+        public function detail($id)
+        {
+            $item = $this->jurnal->find($id);
+
+            if (!$item) {
+                return redirect()->to('/jurnal')
+                    ->with('error', 'Jurnal tidak ditemukan.');
+            }
+
+            $role = session()->get('role');
+
+            if (!in_array($role, ['admin', 'petugas', 'anggota'])) {
+                return redirect()->to('/jurnal')
+                    ->with('error', 'Akses ditolak.');
+            }
+
+            if (
+                $role === 'anggota' &&
+                $item['id_user'] != session()->get('id')
+            ) {
+                return redirect()->to('/jurnal')
+                    ->with('error', 'Kamu tidak memiliki akses ke jurnal ini.');
+            }
+
+            // Mengambil semua foto jurnal
+            $foto = $this->jurnalFoto->getByJurnal($id);
+
+            return view('jurnalpkl/jurnal/detail', [
+                'jurnal' => $item,
+                'foto' => $foto
+            ]);
+        }
+
 
     // Form edit jurnal
     public function edit($id)
@@ -171,6 +306,7 @@ class Jurnal extends BaseController
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
         }
+        
 
         $this->jurnal->update($id, [
             'tanggal' => $this->request->getPost('tanggal'),

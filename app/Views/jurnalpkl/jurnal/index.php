@@ -112,7 +112,7 @@ Jurnal Aktivitas
 
     <?php endif; ?>
 </td>
->
+
                                     <td>
                                         <a href="<?= base_url('jurnal/detail/' . $item['id_jurnal']) ?>"
                                            class="btn btn-sm btn-info">

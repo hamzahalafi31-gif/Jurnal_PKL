@@ -155,43 +155,36 @@ class Users extends BaseController
             $data['password'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
         }
 
-        $this->users->update($id, $data);
+       $this->users->update($id, $data);
 
-        $newRole = $this->request->getPost('role');
+// Perbarui session jika pengguna mengedit profilnya sendiri
+if (session()->get('id') == $id) {
+    session()->set([
+        'nama' => $data['nama'],
+        'foto' => $namaFoto
+    ]);
+}
 
-        if ($newRole === 'anggota') {
-            $anggotaData = $this->anggota->getByUserId($id);
-            if ($anggotaData) {
-                $this->anggota->update($anggotaData['id_anggota'], [
-                    'nis'    => $this->request->getPost('nis'),
-                    'alamat' => $this->request->getPost('alamat'),
-                    'no_hp'  => $this->request->getPost('no_hp'),
-                ]);
-            } else {
-                $this->anggota->save([
-                    'user_id'       => $id,
-                    'nis'           => $this->request->getPost('nis'),
-                    'alamat'        => $this->request->getPost('alamat'),
-                    'no_hp'         => $this->request->getPost('no_hp'),
-                    'tanggal_daftar' => date('Y-m-d'),
-                ]);
-            }
-        
-        }
-        $session = session();
-        $loggedInId = $session->get('id');
-        $loggedInRole = $session->get('role');
+// Data profil dan foto sudah diperbarui melalui tabel users.
+// Tabel anggota_kelompok khusus untuk hubungan pengguna dengan kelompok.
 
-        if ($loggedInRole === 'admin') {
-            return redirect()->to('/users')->with('success', 'Data user berhasil diupdate!');
-        }
+$session = session();
+$loggedInId = $session->get('id');
+$loggedInRole = $session->get('role');
 
-        if ($loggedInId == $id) {
-            return redirect()->to('/users/edit/' . $id)->with('success', 'Data user berhasil diupdate!');
-        }
+if ($loggedInRole === 'admin') {
+    return redirect()->to('/users')
+        ->with('success', 'Data user berhasil diupdate!');
+}
 
-        return redirect()->to('/users')->with('success', 'Data user berhasil diupdate!');
-    }
+if ($loggedInId == $id) {
+    return redirect()->to('/users/edit/' . $id)
+        ->with('success', 'Data user berhasil diupdate!');
+}
+
+return redirect()->to('/users')
+    ->with('success', 'Data user berhasil diupdate!');
+}
 
     public function delete($id)
     {

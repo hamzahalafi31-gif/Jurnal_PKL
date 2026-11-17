@@ -10,15 +10,16 @@ class JurnalAktivitasModel extends Model
     protected $primaryKey = 'id_jurnal';
 
     protected $allowedFields = [
-        'id_user',
-        'tanggal',
-        'judul_kegiatan',
-        'deskripsi_kegiatan',
-        'jam_mulai',
-        'jam_selesai',
-        'status',
-        'catatan_pembimbing'
-    ];
+    'id_user',
+    'tanggal',
+    'judul_kegiatan',
+    'deskripsi_kegiatan',
+    'foto_bukti',
+    'jam_mulai',
+    'jam_selesai',
+    'status',
+    'catatan_pembimbing'
+];
 
     protected $returnType = 'array';
     protected $useTimestamps = false;

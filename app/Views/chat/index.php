@@ -206,20 +206,23 @@ Chatroom
             </div>
 
             
-<form action="<?= base_url('chat/send') ?>"
+<form id="chatForm"
+      action="<?= base_url('chat/send') ?>"
       method="post"
       enctype="multipart/form-data"
-      class="mt-3">
+      class="mt-3"
+      data-ajax="true">
 
     <?= csrf_field() ?>
 
     <div class="mb-2">
         <textarea
-            name="pesan"
-            class="form-control"
-            placeholder="Tulis pesan di sini..."
-            rows="2"
-            maxlength="2000"></textarea>
+        id="pesanChat"
+        name="pesan"
+        class="form-control"
+        placeholder="Tulis pesan di sini..."
+        rows="2"
+        maxlength="2000"></textarea>
     </div>
 
     <div class="d-flex flex-wrap gap-2 align-items-center">
@@ -401,6 +404,94 @@ function escapeHtml(value) {
 
 setInterval(refreshChat, 3000);
 
+// Mengirim pesan tanpa reload halaman
+const chatForm = document.getElementById('chatForm');
+const tombolKirim = chatForm.querySelector('button[type="submit"]');
+const textareaPesan = document.getElementById('pesanChat');
+
+chatForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    if (tombolKirim.disabled) return;
+
+    if (
+        textareaPesan.value.trim() === '' &&
+        !chatForm.querySelector('[name="lampiran"]').files.length
+    ) {
+        return;
+    }
+
+    const formData = new FormData(chatForm);
+
+    tombolKirim.disabled = true;
+    tombolKirim.innerHTML =
+        '<span class="spinner-border spinner-border-sm"></span> Mengirim...';
+
+    try {
+        const response = await fetch(chatForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || 'Pesan gagal dikirim.');
+        }
+
+        // Perbarui token CSRF jika token berubah
+        if (result.csrfHash) {
+            const csrfInput = chatForm.querySelector(
+                'input[name="<?= csrf_token() ?>"]'
+            );
+
+            if (csrfInput) {
+                csrfInput.value = result.csrfHash;
+            }
+        }
+
+        // Kosongkan form setelah berhasil
+        chatForm.reset();
+
+        // Tampilkan pesan terbaru segera
+        await refreshChat();
+
+        scrollChatToBottom();
+
+    } catch (error) {
+        alert(error.message || 'Terjadi kesalahan saat mengirim pesan.');
+    } finally {
+        tombolKirim.disabled = false;
+        tombolKirim.innerHTML =
+            '<i class="bi bi-send-fill"></i> Kirim';
+    }
+});
+
+
+// Kirim pesan dengan tombol Enter
+const pesanChat = document.getElementById('pesanChat');
+
+pesanChat.addEventListener('keydown', function(event) {
+
+    // Enter saja untuk mengirim pesan
+    if (
+        event.key === 'Enter' &&
+        !event.shiftKey &&
+        !event.isComposing
+    ) {
+        event.preventDefault();
+
+        const form = pesanChat.closest('form');
+
+        if (form && pesanChat.value.trim() !== '') {
+            form.requestSubmit();
+        }
+    }
+
+});
 </script>
 
 <?= $this->endSection() ?>

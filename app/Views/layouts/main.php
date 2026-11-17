@@ -169,14 +169,9 @@
             align-items: center;
         }
 
-        .sidebar .user-profile .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 0.75rem;
-            flex-shrink: 0;
-        }
+       
+    
+
 
         .sidebar .user-profile .user-details {
             overflow: hidden;
@@ -272,10 +267,12 @@
         }
 
         .top-navbar .user-menu .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
+            flex-shrink: 0;
+            display: block;
         }
 
         .top-navbar .user-menu .user-name {
@@ -561,45 +558,47 @@ a {
 
     <!-- Main Content -->
     <div class="main-content" id="mainContent">
-        <!-- Top Navbar -->
-        <nav class="top-navbar">
-            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
-                <i class="bi bi-list"></i>
-            </button>
+        
+<!-- Top Navbar -->
+<nav class="top-navbar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+        <i class="bi bi-list"></i>
+    </button>
 
-            <h1 class="page-title ms-3 mb-0"><?= $this->renderSection('pageTitle') ?></h1>
+    <h1 class="page-title ms-3 mb-0">
+        <?= $this->renderSection('pageTitle') ?>
+    </h1>
 
-            <div class="user-menu ms-auto d-flex align-items-center gap-3">
+    <div class="user-menu ms-auto d-flex align-items-center gap-3">
+        <a href="<?= base_url('users/edit/' . session()->get('id')) ?>"
+           class="d-flex align-items-center gap-2 text-decoration-none text-dark">
 
-    <a href="<?= base_url('users/edit/' . session()->get('id')) ?>"
-       class="d-flex align-items-center gap-2 text-decoration-none text-dark">
+            <img
+                src="<?= base_url('uploads/users/' . session()->get('foto')) ?>"
+                alt="Foto Profil"
+                class="user-avatar"
+                onerror="this.src='<?= base_url('assets/img/default-avatar.png') ?>'"
+            >
 
-        <img
-            src="<?= base_url('uploads/users/' . session()->get('foto')) ?>"
-            alt="Foto Profil"
-            class="user-avatar"
-            onerror="this.src='<?= base_url('assets/img/default-avatar.png') ?>'"
-        >
-
-        <div class="d-none d-md-block">
-            <div class="fw-bold">
-                <?= esc(session('nama')) ?>
+            <div class="d-none d-md-block">
+                <div class="fw-bold">
+                    <?= esc(session('nama')) ?>
+                </div>
+                <small class="text-muted">
+                    <?= esc(session('role')) ?>
+                </small>
             </div>
-            <small class="text-muted">
-                <?= esc(session('role')) ?>
-            </small>
-        </div>
+        </a>
 
-    </a>
+        <a href="<?= base_url('logout') ?>"
+           class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+    </div>
+</nav>
 
-    <a href="<?= base_url('logout') ?>"
-       class="btn btn-sm btn-outline-danger">
-        <i class="bi bi-box-arrow-right"></i>
-        Logout
-    </a>
-
-</div>
-        </nav>
+        
 
         <!-- Content Area -->
         <div class="content-area">
@@ -645,9 +644,14 @@ a {
             });
 
             // Close sidebar when clicking a link on mobile
-            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth < 992) {
+            document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function() {
+
+        if (form.dataset.ajax === 'true') {
+            return;
+        }
+
+        if (form.checkValidity()) {
                         sidebar.classList.remove('show');
                         sidebarOverlay.classList.remove('show');
                     }

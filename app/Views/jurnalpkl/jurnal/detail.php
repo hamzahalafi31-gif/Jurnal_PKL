@@ -41,6 +41,30 @@ Detail Jurnal Aktivitas
                     <td><?= nl2br(esc($jurnal['deskripsi_kegiatan'])) ?></td>
                 </tr>
                 <tr>
+                    <th>Foto Bukti Kegiatan</th>
+                    <td>
+                        <?php if (!empty($foto)): ?>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                                <?php foreach ($foto as $itemFoto): ?>
+                                    <a
+                                        href="<?= base_url('uploads/jurnal/' . rawurlencode($itemFoto['nama_foto'])) ?>"
+                                        target="_blank"
+                                    >
+                                        <img
+                                            src="<?= base_url('uploads/jurnal/' . rawurlencode($itemFoto['nama_foto'])) ?>"
+                                            alt="Foto bukti kegiatan"
+                                            style="width: 150px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;"
+                                        >
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <span class="text-muted">Tidak ada foto bukti.</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+
+                <tr>
                     <th>Jam Mulai</th>
                     <td><?= esc($jurnal['jam_mulai'] ?? '-') ?></td>
                 </tr>
@@ -49,15 +73,30 @@ Detail Jurnal Aktivitas
                     <td><?= esc($jurnal['jam_selesai'] ?? '-') ?></td>
                 </tr>
                 <tr>
-                    <th>Status</th>
+                <th>Status</th>
                     <td>
-                        <?php if ($jurnal['status'] === 'disetujui'): ?>
-                            <span class="badge badge-success">Disetujui</span>
-                        <?php elseif ($jurnal['status'] === 'ditolak'): ?>
-                            <span class="badge badge-danger">Ditolak</span>
-                        <?php else: ?>
-                            <span class="badge badge-warning">Menunggu</span>
-                        <?php endif; ?>
+                        <?php
+                        $status = $jurnal['status'] ?? 'menunggu';
+
+                        $warnaStatus = [
+                            'disetujui' => ['#198754', '#ffffff'],
+                            'ditolak'   => ['#dc3545', '#ffffff'],
+                            'menunggu'  => ['#ffc107', '#212529']
+                        ];
+
+                        $warna = $warnaStatus[$status] ?? ['#6c757d', '#ffffff'];
+                        ?>
+
+                        <span style="
+                            display: inline-block;
+                            background-color: <?= $warna[0] ?>;
+                            color: <?= $warna[1] ?>;
+                            padding: 6px 12px;
+                            border-radius: 5px;
+                            font-weight: 600;
+                        ">
+                            <?= esc(ucfirst($status)) ?>
+                        </span>
                     </td>
                 </tr>
                 <tr>
