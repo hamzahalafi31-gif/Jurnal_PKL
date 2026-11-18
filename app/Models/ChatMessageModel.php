@@ -19,18 +19,21 @@ class ChatMessageModel extends Model
     protected $useTimestamps = false;
 
     // Mengambil seluruh pesan beserta nama pengirim
-    public function getAllWithUser()
-    {
-        return $this->select('
-                chat_messages.*,
-                users.nama AS nama_pengirim,
-                users.foto AS foto_pengirim
-            ')
-            ->join(
-                'users',
-                'users.id = chat_messages.id_user'
-            )
-            ->orderBy('chat_messages.created_at', 'ASC')
-            ->findAll();
-    }
+    
+public function getAllWithUser()
+{
+    return $this->select('
+            chat_messages.*,
+            users.nama AS nama_pengirim,
+            users.foto AS foto_pengirim,
+            users.last_seen_at AS terakhir_aktif
+        ')
+        ->join(
+            'users',
+            'users.id = chat_messages.id_user'
+        )
+        ->orderBy('chat_messages.created_at', 'ASC')
+        ->findAll();
+}
+
 }

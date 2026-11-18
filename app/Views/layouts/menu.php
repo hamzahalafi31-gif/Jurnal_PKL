@@ -73,9 +73,9 @@
 </a>
 
 
-<!-- Chatroom -->
+<!-- Obrolan -->
 <a href="<?= base_url('chat') ?>"
    class="nav-link <?= strpos(uri_string(), 'chat') === 0 ? 'active' : '' ?>">
     <i class="bi bi-chat-dots"></i>
-    <span class="nav-text">Chatroom</span>
+    <span class="nav-text">Obrolan</span>
 </a>

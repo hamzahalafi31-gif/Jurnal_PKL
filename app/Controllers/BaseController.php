@@ -49,9 +49,34 @@ abstract class BaseController extends Controller
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
-        parent::initController($request, $response, $logger);
+        
+parent::initController($request, $response, $logger);
 
-        // Preload any models, libraries, etc, here.
+// Mencatat aktivitas terakhir pengguna
+$session = service('session');
+
+if ($session->get('logged_in') && $session->get('id')) {
+
+    $idUser = $session->get('id');
+    $waktuSekarang = time();
+
+    // Perbarui maksimal setiap 60 detik
+    $terakhirUpdate = $session->get('last_seen_update') ?? 0;
+
+    if (($waktuSekarang - $terakhirUpdate) >= 60) {
+
+        $db = \Config\Database::connect();
+
+        $db->table('users')
+            ->where('id', $idUser)
+            ->update([
+                'last_seen_at' => date('Y-m-d H:i:s')
+            ]);
+
+        $session->set('last_seen_update', $waktuSekarang);
+    }
+}
+
 
         // E.g.: $this->session = service('session');
     }

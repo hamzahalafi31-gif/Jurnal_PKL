@@ -2,7 +2,7 @@
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('pageTitle') ?>
-Chatroom
+Obrolan
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
@@ -12,6 +12,50 @@ Chatroom
 
 
 <style>
+
+/* INFORMASI PENGIRIM */
+.chat-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+}
+
+/* WAKTU PENGIRIMAN */
+.chat-time {
+    font-size: 10px;
+    margin-top: 9px;
+    text-align: right;
+    opacity: 0.75;
+    letter-spacing: 0.2px;
+}
+
+/* FOTO PROFIL */
+.chat-avatar {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.10);
+}
+
+/* JARAK ANTAR PESAN */
+.chat-row {
+    margin-bottom: 20px;
+    animation: munculPesan .25s ease;
+}
+
+@keyframes munculPesan {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
     .chat-area {
         height: 480px;
         overflow-y: auto;
@@ -106,6 +150,168 @@ Chatroom
             max-height: 180px;
         }
     }
+    /* HEADER OBROLAN MODERN */
+.obrolan-header {
+    background: linear-gradient(135deg, #0d6efd, #084298);
+    color: white;
+    padding: 22px 25px;
+    border-radius: 12px 12px 0 0;
+}
+
+.obrolan-header h5 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.obrolan-header small {
+    color: #e4efff;
+    font-size: 13px;
+}
+
+.obrolan-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,.18);
+    border-radius: 12px;
+    font-size: 23px;
+}
+
+/* PENYEMPURNAAN GELEMBUNG OBROLAN */
+
+.chat-area {
+    background: #f5f8ff;
+    border: 1px solid #e5ebf5;
+    scroll-behavior: smooth;
+}
+
+.chat-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.chat-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.10);
+}
+
+.chat-row.own .chat-bubble {
+    background: linear-gradient(135deg, #0d6efd, #2563eb);
+    color: white;
+}
+
+.chat-row:not(.own) .chat-bubble {
+    background: #ffffff;
+    border: 1px solid #edf0f5;
+}
+
+.chat-name {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.chat-time {
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+/* AREA INPUT OBROLAN */
+#chatForm {
+    margin-top: 18px !important;
+}
+
+#chatForm textarea {
+    border: 1px solid #dce4f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 65px;
+    background: #ffffff;
+    transition: all 0.25s ease;
+}
+
+#chatForm textarea:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.10);
+    outline: none;
+}
+
+/* INPUT LAMPIRAN */
+#chatForm input[type="file"] {
+    border-radius: 10px;
+    border: 1px solid #dce4f0;
+    padding: 9px;
+    font-size: 12px;
+    background: #ffffff;
+}
+
+/* TOMBOL KIRIM */
+#chatForm button[type="submit"] {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 24px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #0d6efd, #084298);
+    transition: all 0.25s ease;
+}
+
+#chatForm button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(13, 110, 253, 0.25);
+}
+
+#chatForm button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* TAMPILAN HP */
+@media (max-width: 576px) {
+    #chatForm button[type="submit"] {
+        width: 100%;
+    }
+
+    #chatForm input[type="file"] {
+        max-width: 100% !important;
+        width: 100%;
+    }
+}
+
+/* STATUS ONLINE DAN OFFLINE */
+.status-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 500;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.online {
+    background: #16a34a;
+    box-shadow: 0 0 5px rgba(22, 163, 74, .5);
+}
+
+.status-dot.offline {
+    background: #9ca3af;
+}
+
 </style>
 
 
@@ -114,12 +320,21 @@ Chatroom
 
     <div class="card shadow-sm border-0">
 
-        <div class="card-header bg-primary text-white py-3">
-            <h5 class="mb-1">
-                <i class="bi bi-chat-dots"></i>
-                Chatroom Jurnal PKL
-            </h5>
-            <small>Ruang komunikasi Admin, Petugas, dan Anggota PKL</small>
+        <div class="obrolan-header">
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="obrolan-icon">
+                    <i class="bi bi-chat-dots-fill"></i>
+                </div>
+
+                <div>
+                    <h5>Obrolan Jurnal PKL</h5>
+                    <small>
+                        Ruang komunikasi Admin, Petugas, dan Anggota PKL
+                    </small>
+                </div>
+
+            </div>
         </div>
 
         <div class="card-body">
@@ -133,6 +348,11 @@ Chatroom
                         <?php
                             $isOwn = (int) $item['id_user'] === (int) $idLogin;
                             $foto = $item['foto_pengirim'] ?? null;
+                            $waktuAktif = !empty($item['terakhir_aktif'])
+                                ? strtotime($item['terakhir_aktif'])
+                                : 0;
+
+                            $isOnline = $waktuAktif >= (time() - 120);
                         ?>
 
                         <div class="chat-row <?= $isOwn ? 'own' : '' ?>">
@@ -153,6 +373,11 @@ Chatroom
                                 <div class="chat-name">
                                     <?= esc($item['nama_pengirim']) ?>
                                     <?= $isOwn ? '(Anda)' : '' ?>
+
+                                    <span class="status-label">
+                                        <span class="status-dot <?= $isOnline ? 'online' : 'offline' ?>"></span>
+                                        <?= $isOnline ? 'Online' : 'Offline' ?>
+                                    </span>
                                 </div>
 
                                 
@@ -220,7 +445,7 @@ Chatroom
         id="pesanChat"
         name="pesan"
         class="form-control"
-        placeholder="Tulis pesan di sini..."
+        placeholder="Tulis obrolan di sini..."
         rows="2"
         maxlength="2000"></textarea>
     </div>
@@ -293,16 +518,16 @@ async function refreshChat() {
         const newestId = Math.max(
             ...messages.map(item => Number(item.id_chat))
         );
-
-        // Tidak memperbarui jika belum ada pesan baru
         if (newestId <= lastMessageId) return;
+
+
 
         const wasAtBottom =
             chatMessages.scrollHeight -
             chatMessages.scrollTop -
             chatMessages.clientHeight < 100;
 
-        // Memperbarui isi percakapan
+        // Memperbarui isi obrolan
         chatMessages.innerHTML = messages.map(item => {
             const own = Number(item.id_user) === <?= (int) session()->get('id') ?>;
 
@@ -321,6 +546,22 @@ async function refreshChat() {
 
             const safeName = escapeHtml(item.nama_pengirim);
             const safeMessage = escapeHtml(item.pesan);
+            const waktuAktif = item.terakhir_aktif
+                ? new Date(item.terakhir_aktif.replace(' ', 'T') + '+07:00')
+                : null;
+
+            const selisihWaktu = waktuAktif
+                ? Date.now() - waktuAktif.getTime()
+                : Infinity;
+
+            const isOnline = selisihWaktu >= 0 && selisihWaktu <= 120000;
+
+            const statusHtml = `
+                <span class="status-label">
+                    <span class="status-dot ${isOnline ? 'online' : 'offline'}"></span>
+                    ${isOnline ? 'Online' : 'Offline'}
+                </span>
+            `;
             const fileName = item.file_lampiran
     ? item.file_lampiran.split('/').pop().split('\\').pop()
     : '';
@@ -370,8 +611,9 @@ const attachment = fileName
                     ${avatar}
                     <div class="chat-bubble">
                         <div class="chat-name">
-                            ${safeName} ${own ? '(Anda)' : ''}
-                        </div>
+                        ${safeName} ${own ? '(Anda)' : ''}
+                        ${statusHtml}
+                    </div>
                         <div style="white-space: pre-wrap;">${safeMessage}</div>
                     ${attachment}
                     <div class="chat-time">${time}</div>
@@ -387,7 +629,7 @@ const attachment = fileName
         }
 
     } catch (error) {
-        console.error('Gagal memperbarui chat:', error);
+        console.error('Gagal memperbarui obrolan:', error);
     }
 }
 
