@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 18 Nov 2026 pada 07.12
+-- Waktu pembuatan: 18 Nov 2026 pada 07.52
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -92,7 +92,12 @@ INSERT INTO `chat_messages` (`id_chat`, `id_user`, `pesan`, `file_lampiran`, `cr
 (26, 4, 'tes', NULL, '2026-11-16 22:43:12'),
 (27, 1, 'tes', NULL, '2026-11-16 22:43:25'),
 (28, 4, 'oke, mantap jun', NULL, '2026-11-16 22:43:39'),
-(29, 1, 'oke pakkk', NULL, '2026-11-16 22:43:43');
+(29, 1, 'oke pakkk', NULL, '2026-11-16 22:43:43'),
+(30, 1, 'tes', NULL, '2026-11-17 22:36:49'),
+(31, 4, 'kenapa junn?', NULL, '2026-11-17 22:42:53'),
+(32, 1, 'teu pak nge tes ungkul', NULL, '2026-11-17 22:45:14'),
+(33, 4, 'ouh nya atuh', NULL, '2026-11-17 22:45:24'),
+(34, 1, 'nyaa pakk', NULL, '2026-11-17 22:51:24');
 
 -- --------------------------------------------------------
 
@@ -265,21 +270,22 @@ CREATE TABLE `users` (
   `foto` varchar(255) DEFAULT NULL,
   `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
   `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `last_seen_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `nama`, `username`, `email`, `password`, `role`, `foto`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Hamzah Alafi Iskandar', 'Hamzah', 'hamzah.alafi31@smk.belajar.id', '$2y$10$xA/6h5GPOZOycVnxh2.P/ODr3oNJYDi13YBKXPlbrTC8EVkfVemwm', 'anggota', '1794892445_0562d83a2a50d61bff4d.jpg', 'aktif', '2026-11-05 09:57:12', '2026-11-17 05:14:09'),
-(2, 'Administrator', 'admin', 'admin@Jurnal.PKL', '$2y$10$fNziLS/.yHmvnOJ4sQzaie2xad.uAZcQdybft9sgZF8noIeBv/A3C', 'admin', NULL, 'aktif', '2026-11-08 04:05:18', '2026-11-07 20:09:43'),
-(3, 'Saif Paqihul Kamal', 'Paqih', 'saif@smk.belajar.id', '$2y$10$JJsua993zN.7L.eUsiGHd.NlNId29ro2D321iFF56sfGQEiOVep7q', 'anggota', NULL, 'aktif', '2026-11-08 05:15:02', '2026-11-12 09:14:51'),
-(4, 'Fauzi Abdul Aziz Bashri', 'Fauzi', 'Fauzy@Jurnal.PKL', '$2y$10$X4pFwjtuvIKYIhiK8b2XHelBo69BAj/G6sveSBlmz1p0gM43.ORpe', 'petugas', NULL, 'aktif', '2026-11-08 05:18:53', '2026-11-08 05:18:53'),
-(6, 'Zahran Fauzan Zamzami', 'rannn', 'zahran.fauzan154@smk.belajar.id', '$2y$10$fWZ897nOLkDcVjrkPdU6y.WmfoF1KGQzWiqI43Y6VPSGXOsLNqfXi', 'anggota', NULL, 'aktif', '2026-11-12 07:11:47', '2026-11-12 07:11:47'),
-(7, 'Farrel Imaduddin Al Ashari', 'farrel', 'farrelll176@gmail.com', '$2y$10$kXAgCQ7HqyPoBmYM3Fa1ju9I1aC2Ab6NAoUg/vbO50xIw.LCpi352', 'anggota', NULL, 'aktif', '2026-11-12 07:14:33', '2026-11-12 07:14:33'),
-(8, 'Lupi Maulana', 'upy', 'Alli@gmail.com', 'upyyyy', 'anggota', NULL, 'aktif', '2026-11-11 23:20:00', '2026-11-11 23:20:00');
+INSERT INTO `users` (`id`, `nama`, `username`, `email`, `password`, `role`, `foto`, `status`, `created_at`, `updated_at`, `last_seen_at`) VALUES
+(1, 'Hamzah Alafi Iskandar', 'Hamzah', 'hamzah.alafi31@smk.belajar.id', '$2y$10$xA/6h5GPOZOycVnxh2.P/ODr3oNJYDi13YBKXPlbrTC8EVkfVemwm', 'anggota', '1794892445_0562d83a2a50d61bff4d.jpg', 'aktif', '2026-11-05 09:57:12', '2026-11-17 22:51:58', '2026-11-18 13:51:58'),
+(2, 'Administrator', 'admin', 'admin@Jurnal.PKL', '$2y$10$fNziLS/.yHmvnOJ4sQzaie2xad.uAZcQdybft9sgZF8noIeBv/A3C', 'admin', NULL, 'aktif', '2026-11-08 04:05:18', '2026-11-07 20:09:43', NULL),
+(3, 'Saif Paqihul Kamal', 'Paqih', 'saif@smk.belajar.id', '$2y$10$JJsua993zN.7L.eUsiGHd.NlNId29ro2D321iFF56sfGQEiOVep7q', 'anggota', NULL, 'aktif', '2026-11-08 05:15:02', '2026-11-12 09:14:51', NULL),
+(4, 'Fauzi Abdul Aziz Bashri', 'Fauzi', 'Fauzy@Jurnal.PKL', '$2y$10$X4pFwjtuvIKYIhiK8b2XHelBo69BAj/G6sveSBlmz1p0gM43.ORpe', 'petugas', NULL, 'aktif', '2026-11-08 05:18:53', '2026-11-17 22:51:58', '2026-11-18 13:51:58'),
+(6, 'Zahran Fauzan Zamzami', 'rannn', 'zahran.fauzan154@smk.belajar.id', '$2y$10$fWZ897nOLkDcVjrkPdU6y.WmfoF1KGQzWiqI43Y6VPSGXOsLNqfXi', 'anggota', NULL, 'aktif', '2026-11-12 07:11:47', '2026-11-12 07:11:47', NULL),
+(7, 'Farrel Imaduddin Al Ashari', 'farrel', 'farrelll176@gmail.com', '$2y$10$kXAgCQ7HqyPoBmYM3Fa1ju9I1aC2Ab6NAoUg/vbO50xIw.LCpi352', 'anggota', NULL, 'aktif', '2026-11-12 07:14:33', '2026-11-12 07:14:33', NULL),
+(8, 'Lupi Maulana', 'upy', 'Alli@gmail.com', 'upyyyy', 'anggota', NULL, 'aktif', '2026-11-11 23:20:00', '2026-11-11 23:20:00', NULL);
 
 --
 -- Indexes for dumped tables
@@ -364,7 +370,7 @@ ALTER TABLE `anggota_kelompok`
 -- AUTO_INCREMENT untuk tabel `chat_messages`
 --
 ALTER TABLE `chat_messages`
-  MODIFY `id_chat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_chat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT untuk tabel `dokumentasi`
